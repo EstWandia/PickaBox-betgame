@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\MpesaSearch $model */
+/** @var app\models\WinnersSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="mpesa-payments-search">
+<div class="winners-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -21,31 +21,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name') ?>
 
-    <?= $form->field($model, 'MiddleName') ?>
+    <?= $form->field($model, 'phone_number') ?>
 
-    <?= $form->field($model, 'LastName') ?>
-
-    <?php // echo $form->field($model, 'msisdn') ?>
-
-    <?php // echo $form->field($model, 'reference') ?>
-
-
-    <?php // echo $form->field($model, 'ThirdPartytransid') ?>
-
+    <?= $form->field($model, 'game') ?>
 
     <?php // echo $form->field($model, 'amount') ?>
-
- 
 
     <?php // echo $form->field($model, 'created_at') ?>
 
     <?php // echo $form->field($model, 'updated_at') ?>
 
     <?php // echo $form->field($model, 'deleted_at') ?>
-
-    <?php // echo $form->field($model, 'state') ?>
-
-    
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

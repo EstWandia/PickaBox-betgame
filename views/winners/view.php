@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\models\MpesaPayments $model */
+/** @var app\models\Winners $model */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Mpesa Payments', 'url' => ['index']];
+$this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Winners', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="mpesa-payments-view">
+<div class="winners-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -32,15 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'transid',
             'name',
-            'MiddleName',
-            'LastName',
-            'msisdn',
-            'reference',
+            'phone_number',
+            'game',
             'amount',
             'created_at',
             'updated_at',
             'deleted_at',
-            'state',
         ],
     ]) ?>
 

@@ -24,22 +24,19 @@ define('ANALYTICS_USERNAME','root');
 define('SMS_USERNAME','root');
 define('DB_USERNAME','root');
 
-
-define('SMS_API_USERNAME','');
-
-define('SMS_API_PASSWORD','P@ssW0rd');
-define('SENDER_NAME','NCVL');
-define('NESSCOM_SENDER_ID','');
-define('NESSCOM_API_PASSWORD','');
-define('NESSCOM_API_USERNAME','');
-
-define('EMAIL_FROM', 'notification@codeshop.co.ke');
-define('EMAIL_TO', 'estherwandiangetha@gmail.com');
-// define('EMAIL_TO', 'james@codeshop.co.ke');
-define('EMAIL_BCC', 'jonathan@codeshop.co.ke');
-define('LOCAL_CURRENCY', 'LRD');
-define('EMAIL_PASSWORD', '55kIssa!y');
-define('DEPOSIT_AUTHORIZATION', '55kIssa!y');
-define('CUSTOMERCARE', '55kIssa!y');
-define('PLAY_AMOUNT', '50');
-define('USSD_CODE', '*384*47312#');
+define('USSD_CODE', '**384*95334#');
+define('PICKABOX', ['1*1*1', '1*1*2', '1*1*3', '1*1*4', '1*1*5', '1*1*6']);
+define('USSD_MONEY', ['1*1*1*1', '1*1*2*1', '1*1*3*1', '1*1*4*1', '1*1*5*1', '1*1*6*1',
+'1*1*1*2', '1*1*2*2', '1*1*3*2', '1*1*4*2', '1*1*5*2', '1*1*6*2',
+'1*1*1*3', '1*1*2*3', '1*1*3*3', '1*1*4*3', '1*1*5*3', '1*1*6*3',
+'1*1*1*4', '1*1*2*4', '1*1*3*4', '1*1*4*4', '1*1*5*4', '1*1*6*4',
+'1*1*1*5', '1*1*2*5', '1*1*3*5', '1*1*4*5', '1*1*5*5', '1*1*6*5',
+'1*1*1*6', '1*1*2*6', '1*1*3*6', '1*1*4*6', '1*1*5*6', '1*1*6*6',
+'1*1*1*1', '1*1*2*1', '1*1*3*1', '1*1*4*1', '1*1*5*1', '1*1*6*1',
+'1*2*1', '1*2*2', '1*2*3', '1*2*4', '1*2*5', '1*2*6',
+]);
+define('RASHARASHA',['2*1', '2*2', '2*3', '2*4', '2*5', '2*6']);
+define('LAST_LEVEL_MESSAGE', ' END Enter pin when prompted');
+define('INVALID_REQUEST','END Invalid Entry');
+define('REQUEST_TO_PAY','http://localhost:8000/mpesa/savempesa');
+define('SAVE_WINNER','http://localhost:8000/winners/savewinners');

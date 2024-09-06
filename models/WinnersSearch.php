@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\MpesaPayments;
+use app\models\Winners;
 
 /**
- * MpesaSearch represents the model behind the search form of `app\models\MpesaPayments`.
+ * WinnersSearch represents the model behind the search form of `app\models\Winners`.
  */
-class MpesaSearch extends MpesaPayments
+class WinnersSearch extends Winners
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class MpesaSearch extends MpesaPayments
     public function rules()
     {
         return [
-            [['id', 'transid', 'name', 'msisdn', 'reference'], 'safe'],
-            [['state'], 'integer'],
+            [['id', 'transid', 'name', 'phone_number', 'game', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
+            [['amount'], 'number'],
         ];
     }
 
@@ -40,7 +40,7 @@ class MpesaSearch extends MpesaPayments
      */
     public function search($params)
     {
-        $query = MpesaPayments::find();
+        $query = Winners::find();
 
         // add conditions that should always apply here
 
@@ -63,18 +63,17 @@ class MpesaSearch extends MpesaPayments
 
         // grid filtering conditions
         $query->andFilterWhere([
-            
+            'amount' => $this->amount,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'state' => $this->state,
+            'deleted_at' => $this->deleted_at,
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'transid', $this->transid])
             ->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'reference', $this->reference])
-            ->andFilterWhere(['like', 'amount', $this->amount])
-            ->andFilterWhere(['like', 'deleted_at', $this->deleted_at]);
+            ->andFilterWhere(['like', 'phone_number', $this->phone_number])
+            ->andFilterWhere(['like', 'game', $this->game]);
 
         return $dataProvider;
     }
