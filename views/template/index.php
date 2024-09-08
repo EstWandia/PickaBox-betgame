@@ -1,26 +1,27 @@
 <?php
 
-use app\models\MpesaPayments;
+use app\models\Template;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
-
+use yii\widgets\Pjax;
 /** @var yii\web\View $this */
-/** @var app\models\MpesaSearch $searchModel */
+/** @var app\models\TemplateSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Mpesa Payments';
+$this->title = 'Templates';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="mpesa-payments-index">
+<div class="template-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Mpesa Payments', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Template', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
+    <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -30,23 +31,17 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'transid',
             'name',
-            'msisdn',
-            'amount',
-            'reference',
-            'created_at',
-            'updated_at',
-            //'deleted_at',
-            'state',
+            'message',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, MpesaPayments $model, $key, $index, $column) {
+                'urlCreator' => function ($action, Template $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],
         ],
     ]); ?>
 
+    <?php Pjax::end(); ?>
 
 </div>

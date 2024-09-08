@@ -155,7 +155,7 @@ class WinnersController extends Controller
         }
     
         // Check if $data is an array and contains required keys
-        if (!is_array($data) || !isset($data['transid'], $data['amount'], $data['phone_number'], $data['game'])) {
+        if (!is_array($data) || !isset($data['transid'], $data['amount'], $data['phone_number'], $data['game'],$data['name'],)) {
             Yii::$app->response->statusCode = 400;
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             return [
@@ -168,15 +168,15 @@ class WinnersController extends Controller
         $amount = $data['amount'];
         $phone_number = $data['phone_number'];
         $game = $data['game'];
+        $name = $data['name'];
     
         $check = Winners::find()->where(['transid' => $trans_id])->count();
-    
         if ($check == 0) {
             try {
                 $model = new Winners();
                 $model->id = Uuid::generate()->string;
                 $model->transid = $trans_id;
-                $model->name = rand(2, 99) . 'FirstName'; // Example Name
+                $model->name = $name;
                 $model->phone_number= $phone_number;
                 $model->game = $game;
                 $model->amount = $amount;

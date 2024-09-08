@@ -214,12 +214,13 @@ class MpesaController extends Controller
             $response .= "6: KES. 1000/-\n";
         } else if (in_array($ussdString, USSD_MONEY)) {
             // Handle payment requests
+            $response = LAST_LEVEL_MESSAGE;
             $id = Uuid::generate()->string;
             $reference = myhelper::processGameIds($ussdString);
             $amount = myhelper::getAmount($ussdString);
             myhelper::reqToPay($id, $msisdn, $reference, $amount);
             myhelper::winningPlayer($ussdString, $id, $msisdn, $reference, $randomNumber);
-            $response = LAST_LEVEL_MESSAGE;
+           
         } else if ($ussdString === "2") {
             // Response for Rasha Rasha
             $response = "CON RASHA RASHA Chagua Kikundi\n";
@@ -232,12 +233,13 @@ class MpesaController extends Controller
             $response .= "6: KES. 1000 - WIN 30,000\n";
         } else if (in_array($ussdString, RASHARASHA)) {
             // Handle Rasha Rasha payments
+            $response = LAST_LEVEL_MESSAGE;
             $id = Uuid::generate()->string;
             $reference = myhelper::processGameIds($ussdString);
-            $amount = myhelper::getRashaRashaAmount($ussdString);
+            $amount = myhelper::getRashaRashaAmount($ussdString, 'KES');
             myhelper::reqToPay($id, $msisdn, $reference, $amount);
-            $response = LAST_LEVEL_MESSAGE;
-            myhelper::winningPlayer($ussdString, $id, $msisdn, $reference, $randomNumber);
+            myhelper::winningPlayerRasharasha($ussdString, $id, $msisdn, $reference, $randomNumber);
+          
         } else {
             // Invalid request
             $response = INVALID_REQUEST;
