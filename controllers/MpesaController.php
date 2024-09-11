@@ -219,8 +219,8 @@ class MpesaController extends Controller
             $reference = myhelper::processGameIds($ussdString);
             $amount = myhelper::getAmount($ussdString);
             myhelper::reqToPay($id, $msisdn, $reference, $amount);
-            $yooh=myhelper::winningPlayer($ussdString, $id, $msisdn, $reference, $randomNumber,$amount);
-            var_dump($yooh);exit;
+            myhelper::winningPlayer($ussdString, $id, $msisdn, $reference, $randomNumber,$amount);
+           
            
         } else if ($ussdString === "2") {
             // Response for Rasha Rasha

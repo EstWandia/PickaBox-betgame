@@ -200,22 +200,23 @@ class myhelper extends Component
                 if (isset($shuffledMoney[$secondLastArr]) && ($shuffledMoney[$secondLastArr] > 0) && ($shuffledMoney[$secondLastArr] <= $winningAmount) && $amount !== 1000) {
 
                     $disburse = isset($shuffledMoney[$secondLastArr]) ? $shuffledMoney[$secondLastArr] : 0;
-                    return self::getPickWinnerData($transid, $disburse, $msisdn, $reference);
-                }
-                else if (isset($shuffledMoney[$secondLastArr]) && ($shuffledMoney[$secondLastArr] > 0) && ($shuffledMoney[$secondLastArr] <= $winningAmount) && $amount == 1000) {
+                    self::getPickWinnerData($transid, $disburse, $msisdn, $reference);
+                    self::saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, $shuffledMoney, $disburse, 'WIN');
+                } else if (isset($shuffledMoney[$secondLastArr]) && ($shuffledMoney[$secondLastArr] > 0) && ($shuffledMoney[$secondLastArr] <= $winningAmount) && $amount == 1000) {
 
                     $fiftyPercentIndex = array_search((int) $fiftyPercent, $shuffledMoney);
 
                     // If 50% amount is found in shuffledMoney
                     if ($fiftyPercentIndex !== false) {
                         $disburse = $shuffledMoney[$fiftyPercentIndex];
-                        return self::getPickWinnerData($transid, $disburse, $msisdn, $reference);
+                        self::getPickWinnerData($transid, $disburse, $msisdn, $reference);
+                        self::saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, $shuffledMoney, $disburse, 'WIN');
                     } else {
-                        return self::saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, 'LOSE');
+                        self::saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, $shuffledMoney, $disburse, 'LOSE');
                     }
                 } else {
                     // If amountToCheck is not valid or conditions not met, handle as lose
-                    return self::saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, 'LOSE');
+                    self::saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, $shuffledMoney, $disburse, 'LOSE');
                 }
             }
         } else {
@@ -393,29 +394,56 @@ class myhelper extends Component
     }
 
 
-    public static function saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, $type = 'LOSE')
+    public static function saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, $shuffledMoney, $disburse, $type = 'LOSE')
     {
+        // Generate a random ticket
         $ticket = '#' . substr(bin2hex(random_bytes(3)), 0, 6);
+
+        // Fetch the payment record
         $payment = MpesaPayments::find()->where(['transid' => $transid])->one();
         if (!$payment) {
+
             return "Payment record not found for losing case";
         }
 
+        // Fetch the template
         $templateName = ($type == 'LOSE') ? 'lose_pickabox' : 'winner_pickabox';
         $template = Template::find()->where(['name' => $templateName])->one();
         if (!$template) {
+
             return "Template not found for $type case";
         }
 
         $message = $template->message;
 
-        if ($type == 'LOSE' && isset($idsArray[$totalCount - 2])) {
-            $secondLastArr = $idsArray[$totalCount - 2];
-            $message = str_replace(['[randomNum]', '[Ticket]'], [$secondLastArr, $ticket], $message);
-        } else {
-            $message = str_replace(['[randomNum]', '[Ticket]'], [$randomNumber, $ticket], $message);
+
+        // Build the shuffled money string
+        $shuffledMoneyString = '';
+        foreach ($shuffledMoney as $key => $value) {
+            $shuffledMoneyString .= 'BOX' . $key . ' KES ' . $value . ' ';
+        }
+        $shuffledMoneyString = trim($shuffledMoneyString);
+
+        // Determine the replacement values based on the type
+        if ($type == 'LOSE') {
+            if (isset($idsArray[0]) && $idsArray[0] === 1 && isset($idsArray[1]) && $idsArray[1] === 1) {
+                $secondLastArr = $idsArray[$totalCount - 2];
+                $message = str_replace(['[randomNum]', '[Ticket]', '[box]'], [$secondLastArr, $ticket, $shuffledMoneyString], $message);
+            } else {
+                $message = str_replace(['[randomNum]', '[Ticket]', '[box]'], [$randomNumber, $ticket, $shuffledMoneyString], $message);
+            }
+        } elseif ($type == 'WIN') {
+            if (isset($idsArray[0]) && $idsArray[0] === 1 && isset($idsArray[1]) && $idsArray[1] === 1) {
+                $secondLastArr = $idsArray[$totalCount - 2];
+                $message = str_replace(['[amount]', '[randomNum]', '[Ticket]', '[box]'], [$disburse, $secondLastArr, $ticket, $shuffledMoneyString], $message);
+            } else {
+                $message = str_replace(['[amount]', '[randomNum]', '[Ticket]', '[box]'], [$disburse, $randomNumber, $ticket, $shuffledMoneyString], $message);
+            }
         }
 
+
+
+        // Create and save the Outbox record
         $outbox = new Outbox();
         $outbox->id = $payment->transid;
         $outbox->message = $message;
