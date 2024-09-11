@@ -219,7 +219,8 @@ class MpesaController extends Controller
             $reference = myhelper::processGameIds($ussdString);
             $amount = myhelper::getAmount($ussdString);
             myhelper::reqToPay($id, $msisdn, $reference, $amount);
-            myhelper::winningPlayer($ussdString, $id, $msisdn, $reference, $randomNumber);
+            $yooh=myhelper::winningPlayer($ussdString, $id, $msisdn, $reference, $randomNumber,$amount);
+            var_dump($yooh);exit;
            
         } else if ($ussdString === "2") {
             // Response for Rasha Rasha
@@ -238,7 +239,8 @@ class MpesaController extends Controller
             $reference = myhelper::processGameIds($ussdString);
             $amount = myhelper::getRashaRashaAmount($ussdString, 'KES');
             myhelper::reqToPay($id, $msisdn, $reference, $amount);
-            myhelper::winningPlayerRasharasha($ussdString, $id, $msisdn, $reference, $randomNumber);
+            
+            //myhelper::winningPlayerRasharasha($ussdString, $id, $msisdn, $reference, $randomNumber);
           
         } else {
             // Invalid request
@@ -249,22 +251,22 @@ class MpesaController extends Controller
         echo $response;
     }
     
-    public function actionMakepayment($amount, $msisdn, $reference) {
-        // Payment processing through external service
-        $url = 'https://localhost:8000/mpesapayments/savempesa'; // Ensure this URL is correctly reachable from your environment
-        $data = array(
-            'amount' => $amount,
-            'msisdn' => $msisdn,
-            'transid' =>$id,
-            'reference'=>$reference
-        );
-        $headers = array(
-            'Content-Type: application/x-www-form-urlencoded',
-            'ApiKey: ' // Insert the correct API key here
-        );
-        $response = Myhelper::curlPost($url, $data, $headers); // Assuming Myhelper::curlPost is correctly defined to make POST requests
-        return $response;
-    }
+    // public function actionMakepayment($amount, $msisdn, $reference) {
+    //     // Payment processing through external service
+    //     $url = 'https://localhost:8000/mpesapayments/savempesa'; // Ensure this URL is correctly reachable from your environment
+    //     $data = array(
+    //         'amount' => $amount,
+    //         'msisdn' => $msisdn,
+    //         'transid' =>$id,
+    //         'reference'=>$reference
+    //     );
+    //     $headers = array(
+    //         'Content-Type: application/x-www-form-urlencoded',
+    //         'ApiKey: ' // Insert the correct API key here
+    //     );
+    //     $response = Myhelper::curlPost($url, $data, $headers); // Assuming Myhelper::curlPost is correctly defined to make POST requests
+    //     return $response;
+    // }
     public function actionSavempesa()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -314,6 +316,9 @@ class MpesaController extends Controller
                 $model->created_at = date("Y-m-d H:i:s");
                 $model->updated_at = date("Y-m-d H:i:s");
                 $model->save(false);
+
+                MpesaPayments::savePlayamount($model->id);
+                
             } catch (IntegrityException $e) {
                 Yii::error("IntegrityException: " . $e->getMessage());
                 Yii::$app->response->statusCode = 500;
@@ -329,8 +334,7 @@ class MpesaController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         Yii::$app->response->data = $data; // Set the data property, not content
         return Yii::$app->response->data;
-    }
-        
+    }        
     
     public function beforeAction($action) {
         // Disable CSRF validation for specific actions

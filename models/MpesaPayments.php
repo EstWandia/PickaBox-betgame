@@ -63,4 +63,26 @@ class MpesaPayments extends \yii\db\ActiveRecord
             'state' => 'State',
         ];
     }
-}
+    public static function savePlayAmount($id) {
+        $mpesa = MpesaPayments::findOne($id);
+    
+        if ($mpesa !== null) {
+            $existingRecord = PlayingPool::findOne($mpesa->id);
+    
+            if ($existingRecord === null) {
+                $model = new PlayingPool();
+    
+                $model->id = $mpesa->id;
+                $model->transid = $mpesa->transid;
+                $model->reference = $mpesa->reference;
+                $model->name = $mpesa->name;
+                $model->msisdn = $mpesa->msisdn;
+                $model->amount = (int)(0.80 * $mpesa->amount);
+                $model->created_at = date("Y-m-d H:i:s");
+                $model->updated_at = date("Y-m-d H:i:s");
+    
+                $model->save(false);
+            }
+         }
+        }
+    }

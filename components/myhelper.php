@@ -108,16 +108,18 @@ class myhelper extends Component
                 '4' => 200,
                 '5' => 500,
                 '6' => 1000
-
             ];
 
             if (isset($amounts[$lastElement])) {
-                return $amounts[$lastElement];
+                $amount = $amounts[$lastElement];
+                return intval(round($amount));
             }
         }
 
         return null;
     }
+
+
 
     public static function ReqToPay($id, $msisdn, $reference, $amount)
     {
@@ -128,6 +130,7 @@ class myhelper extends Component
             "msisdn" => $msisdn,
             "reference" => $reference
         ];
+
         $url = REQUEST_TO_PAY;
         //$jsonRequest = json_encode($request);
 
@@ -136,31 +139,54 @@ class myhelper extends Component
             'Content-Type:application/json',
         ];
         $response = myhelper::curlPost($request, $headers, $url);
+
         //RelTransactionLog::log(Uuid::generate()->string,$response,'mtn-stk-resp',0);
         return $response;
         //var_dump($response);exit;
 
 
     }
-    public static function winningPlayer($arr, $id, $msisdn, $reference, $randomNumber)
+    public static function winningPlayer($arr, $id, $msisdn, $reference, $randomNumber, $amount)
     {
-        $constantAmt = 2000;
-        $amountTocheck = myhelper::AmountAttained();
+
+        $mpesa = (int) myhelper::getAmountAttained();
+        var_dump($mpesa);
+        $disburse = (int) myhelper::getAmountDisbursed();
+        $winningAmount = $mpesa - $disburse;
+        var_dump($winningAmount);
         $idsArray = explode('*', $arr);
+        $phone_number = $msisdn;
+        $game = $reference;
 
         if (count($idsArray) >= 2) {
             $firstValue = $idsArray[0];
             $secondValue = $idsArray[1];
             $totalCount = count($idsArray);
 
-            $money = [
-                '1' => '50',
-                '2' => '100',
-                '3' => '0',
-                '4' => '200',
-                '5' => '0',
-                '6' => '0',
-            ];
+            if ($winningAmount < 0) {
+                // Use the constant values if the winningAmount is negative
+                $money = ['50', '100', '0', '200', '0', '0'];
+            } else {
+                // Calculate 20%, 30%, and 50% of the winningAmount
+                $twentyPercent = (int) ($winningAmount * 0.20);
+                $thirtyPercent = (int) ($winningAmount * 0.30);
+                $fiftyPercent = (int) ($winningAmount * 0.50);
+
+                // Create the money array
+                $money = ['0', '0', '0', (int) $twentyPercent, (int) $thirtyPercent, (int) $fiftyPercent];
+
+                // Optionally shuffle the array if needed
+                shuffle($money);
+            }
+
+            // Create an associative array with numeric keys starting from 1
+            $shuffledMoney = [];
+            foreach ($money as $index => $value) {
+                $shuffledMoney[$index + 1] = (int) $value; // Index + 1 to start keys from 1
+            }
+
+            // Output the shuffled associative array
+            print_r($shuffledMoney);
             $transid = $id;
 
             if (in_array($firstValue, ['1']) && in_array($secondValue, ['1', '2'])) {
@@ -169,63 +195,27 @@ class myhelper extends Component
                 } elseif ($secondValue == '2') {
                     $secondLastArr = $randomNumber;
                 }
+                var_dump($shuffledMoney[$secondLastArr]);
 
-                if (isset($money[$secondLastArr]) && ($money[$secondLastArr] > 0) && ($amountTocheck >= $constantAmt)) {
+                if (isset($shuffledMoney[$secondLastArr]) && ($shuffledMoney[$secondLastArr] > 0) && ($shuffledMoney[$secondLastArr] <= $winningAmount) && $amount !== 1000) {
 
-                    $amount = $money[$secondLastArr];
-                    $phone_number = $msisdn;
-                    $game = $reference;
+                    $disburse = isset($shuffledMoney[$secondLastArr]) ? $shuffledMoney[$secondLastArr] : 0;
+                    return self::getPickWinnerData($transid, $disburse, $msisdn, $reference);
+                }
+                else if (isset($shuffledMoney[$secondLastArr]) && ($shuffledMoney[$secondLastArr] > 0) && ($shuffledMoney[$secondLastArr] <= $winningAmount) && $amount == 1000) {
 
-                    $paymentRecord = MpesaPayments::find()->where(['transid' => $transid])->one();
-                    if (!$paymentRecord) {
-                        return "Payment record not found";
+                    $fiftyPercentIndex = array_search((int) $fiftyPercent, $shuffledMoney);
+
+                    // If 50% amount is found in shuffledMoney
+                    if ($fiftyPercentIndex !== false) {
+                        $disburse = $shuffledMoney[$fiftyPercentIndex];
+                        return self::getPickWinnerData($transid, $disburse, $msisdn, $reference);
+                    } else {
+                        return self::saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, 'LOSE');
                     }
-                    $name = $paymentRecord->name;
-
-                    $request = [
-                        "transid" => $transid,
-                        "amount" => $amount,
-                        "externalId" => $transid,
-                        "phone_number" => $phone_number,
-                        "game" => $game,
-                        "name" => $name
-                    ];
-
-                    $url = SAVE_WINNER;
-                    $headers = ['Content-Type: application/json'];
-                    $response = myhelper::curlPost($request, $headers, $url);
-
-                    return $response; // Return response in winning case
                 } else {
-                    $ticket = '#' . substr(bin2hex(random_bytes(3)), 0, 6);
-                    $payment = MpesaPayments::find()->where(['transid' => $transid])->one();
-                    if (!$payment) {
-                        return "Payment record not found for losing case";
-                    }
-
-                    $template = Template::find()->where(['name' => 'lose'])->one();
-                    if (!$template) {
-                        return "Template not found for losing case";
-                    }
-
-                    if ($template && $payment) {
-                        $outbox = new Outbox();
-                        $outbox->id = $payment->transid;
-                        $message = $template->message;
-
-                        if ($secondValue == '2') {
-                            $message = str_replace(['[randomNum]', '[Ticket]'], [$randomNumber, $ticket], $message);
-                        } else {
-                            $secondLastArr = $idsArray[$totalCount - 2];
-                            $message = str_replace(['[randomNum]', '[Ticket]'], [$secondLastArr, $ticket], $message);
-                        }
-
-                        $outbox->message = $message;
-
-                        if (!$outbox->save(false)) {
-                            return "Failed to save outbox message: " . print_r($outbox->getErrors(), true);
-                        }
-                    }
+                    // If amountToCheck is not valid or conditions not met, handle as lose
+                    return self::saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, 'LOSE');
                 }
             }
         } else {
@@ -233,12 +223,32 @@ class myhelper extends Component
         }
     }
 
-    public static function AmountAttained()
+    public static function getamountAttained()
     {
-        $sql = "SELECT SUM(amount) as total FROM mpesa_payments WHERE state = 0";
-        $total = Yii::$app->db->createCommand($sql)->queryScalar(); // Use queryScalar to fetch a single value
-        return $total;
+        $sql = "SELECT SUM(amount) as total 
+                FROM playing_pool  
+                WHERE DATE(created_at) = CURDATE()"; // Filter for today's date
+
+        $total = Yii::$app->db->createCommand($sql)->queryScalar(); // Fetch a single value
+
+        // Return 0 if the result is NULL, cast to int
+        return $total !== null ? (int) $total : 0;
     }
+
+
+    public static function getAmountDisbursed()
+    {
+        $sql = "SELECT SUM(amount) as total 
+                FROM winning  
+                WHERE DATE(created_at) = CURDATE()"; // Filter for today's date
+
+        $total = Yii::$app->db->createCommand($sql)->queryScalar(); // Fetch a single value
+
+        // Return 0 if the result is NULL, cast to int
+        return $total !== null ? (int) $total : 0;
+    }
+
+
     public static function getRashaRashaAmount($ussdString, $type = 'WIN')
     {
         $idsArray = explode('*', $ussdString);
@@ -304,12 +314,11 @@ class myhelper extends Component
                 $url = SAVE_WINNER;
                 $headers = ['Content-Type: application/json'];
                 $response = myhelper::curlPost($request, $headers, $url);
-                myhelper::saveOutbox($id,$ussdString,'WIN');
+                myhelper::saveOutbox($id, $ussdString, 'WIN');
 
                 return $response; // Return response in winning case
             } else {
-               myhelper::saveOutbox($id,$ussdString,'LOSE');
-              
+                myhelper::saveOutbox($id, $ussdString, 'LOSE');
             }
         } else {
             return "Invalid input or condition not met";
@@ -321,37 +330,100 @@ class myhelper extends Component
         $ticketId = '#' . substr(bin2hex(random_bytes(3)), 0, 6);
         $round = '#' . substr(bin2hex(random_bytes(5)), 0, 10);
         $payment = MpesaPayments::find()->where(['transid' => $transid])->one();
-    
+
         if (!$payment) {
             return "Payment record not found for {$type} case";
         }
-    
+
         $templateName = ($type == 'LOSE') ? 'lose_rasharasha' : 'winner_rasharasha';
         $template = Template::find()->where(['name' => $templateName])->one();
-    
+
         if (!$template) {
             return "Template not found for {$type} case";
         }
-    
+
         $message = $template->message;
         $name = $payment->name ?? 'Player';
         $outbox = new Outbox();
         $outbox->id = $transid;
-    
+
         if ($type == 'LOSE') {
-            $outbox->type =$type;
+            $outbox->type = $type;
             $rank = rand(1, 99);
             $message = str_replace(['[ticket]', '[rank]', '[round]', '[name]'], [$ticketId, $rank, $round, $name], $message);
         } else {
-            $outbox->type =$type;
+            $outbox->type = $type;
             $amount = myhelper::getRashaRashaAmount($ussdString, 'WIN');
             $date = date('Y-m-d H:i:s');
             $message = str_replace(['[name]', '[amount]', '[round]', '[date]'], [$name, $amount, $round, $date], $message);
         }
-    
+
         $outbox->message = $message;
-    
+
         return $outbox->save(false) ? null : "Failed to save outbox message: " . print_r($outbox->getErrors(), true);
     }
-    
+    public static function getPickWinnerData($transid, $disburse, $msisdn, $reference)
+    {
+
+        $phone_number = $msisdn;
+        $game = $reference;
+
+        // Find the payment record
+        $paymentRecord = MpesaPayments::find()->where(['transid' => $transid])->one();
+        if (!$paymentRecord) {
+            return ["error" => "Payment record not found"];
+        }
+        $name = $paymentRecord->name;
+
+        // Prepare the request data
+        $request = [
+            "transid" => $transid,
+            "amount" => $disburse,
+            "externalId" => $transid,
+            "phone_number" => $phone_number,
+            "game" => $game,
+            "name" => $name
+        ];
+
+        $url = SAVE_WINNER;
+        $headers = ['Content-Type: application/json'];
+        myhelper::curlPost($request, $headers, $url);
+
+        // return $response;
+    }
+
+
+    public static function saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, $type = 'LOSE')
+    {
+        $ticket = '#' . substr(bin2hex(random_bytes(3)), 0, 6);
+        $payment = MpesaPayments::find()->where(['transid' => $transid])->one();
+        if (!$payment) {
+            return "Payment record not found for losing case";
+        }
+
+        $templateName = ($type == 'LOSE') ? 'lose_pickabox' : 'winner_pickabox';
+        $template = Template::find()->where(['name' => $templateName])->one();
+        if (!$template) {
+            return "Template not found for $type case";
+        }
+
+        $message = $template->message;
+
+        if ($type == 'LOSE' && isset($idsArray[$totalCount - 2])) {
+            $secondLastArr = $idsArray[$totalCount - 2];
+            $message = str_replace(['[randomNum]', '[Ticket]'], [$secondLastArr, $ticket], $message);
+        } else {
+            $message = str_replace(['[randomNum]', '[Ticket]'], [$randomNumber, $ticket], $message);
+        }
+
+        $outbox = new Outbox();
+        $outbox->id = $payment->transid;
+        $outbox->message = $message;
+
+        if (!$outbox->save(false)) {
+            return "Failed to save outbox message: " . print_r($outbox->getErrors(), true);
+        }
+
+        return "Outbox message saved successfully";
+    }
 }
