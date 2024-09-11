@@ -149,9 +149,9 @@ class myhelper extends Component
     public static function winningPlayer($arr, $id, $msisdn, $reference, $randomNumber, $amount)
     {
 
-        $mpesa = (int) myhelper::getAmountAttained();
+        $mpesa = (int) myhelper::getAmountAttained('PICKABOX');
         var_dump($mpesa);
-        $disburse = (int) myhelper::getAmountDisbursed();
+        $disburse = (int) myhelper::getAmountDisbursed('PICKABOX');
         $winningAmount = $mpesa - $disburse;
         var_dump($winningAmount);
         $idsArray = explode('*', $arr);
@@ -224,30 +224,48 @@ class myhelper extends Component
         }
     }
 
-    public static function getamountAttained()
-    {
-        $sql = "SELECT SUM(amount) as total 
-                FROM playing_pool  
-                WHERE DATE(created_at) = CURDATE()"; // Filter for today's date
+    public static function getamountAttained($type)
+{
+    // Determine the reference value based on the type
+    $referenceValue = ($type == 'RASHARASHA') ? 'RASHARASHA' : 'PICKABOX';
 
-        $total = Yii::$app->db->createCommand($sql)->queryScalar(); // Fetch a single value
+    // Prepare the SQL query with the reference condition
+    $sql = "SELECT SUM(amount) as total 
+            FROM playing_pool  
+            WHERE DATE(created_at) = CURDATE() 
+              AND reference = :reference"; // Filter for today's date and the reference value
 
-        // Return 0 if the result is NULL, cast to int
-        return $total !== null ? (int) $total : 0;
-    }
+    // Execute the query with the reference parameter
+    $total = Yii::$app->db->createCommand($sql)
+        ->bindValue(':reference', $referenceValue)
+        ->queryScalar(); // Fetch a single value
+
+    // Return 0 if the result is NULL, cast to int
+    return $total !== null ? (int) $total : 0;
+}
 
 
-    public static function getAmountDisbursed()
-    {
-        $sql = "SELECT SUM(amount) as total 
-                FROM winning  
-                WHERE DATE(created_at) = CURDATE()"; // Filter for today's date
 
-        $total = Yii::$app->db->createCommand($sql)->queryScalar(); // Fetch a single value
+public static function getAmountDisbursed($type)
+{
+    // Determine the reference value based on the type
+    $referenceValue = ($type == 'RASHARASHA') ? 'RASHARASHA' : 'PICKABOX';
 
-        // Return 0 if the result is NULL, cast to int
-        return $total !== null ? (int) $total : 0;
-    }
+    // Prepare the SQL query with the reference condition
+    $sql = "SELECT SUM(amount) as total 
+            FROM winning  
+            WHERE DATE(created_at) = CURDATE() 
+              AND game = :game"; // Filter for today's date and the reference value
+
+    // Execute the query with the reference parameter
+    $total = Yii::$app->db->createCommand($sql)
+        ->bindValue(':game', $referenceValue)
+        ->queryScalar(); // Fetch a single value
+
+    // Return 0 if the result is NULL, cast to int
+    return $total !== null ? (int) $total : 0;
+}
+
 
 
     public static function getRashaRashaAmount($ussdString, $type = 'WIN')
@@ -257,7 +275,7 @@ class myhelper extends Component
         if (!empty($idsArray) && isset($idsArray[1])) {
             $index = (int) $idsArray[1];
             $amounts = [
-                '1 KES 20 - WIN 1,360',
+                '1 KES 20 - WIN 60',
                 '2 KES 50 - WIN 3,500',
                 '3 KES 100 - WIN 4,020',
                 '4 KES 200 - WIN 13,600',
@@ -285,47 +303,35 @@ class myhelper extends Component
 
 
 
-    public static function winningPlayerRasharasha($ussdString, $id, $msisdn, $reference)
+    public static function winningPlayerRasharasha($ussdString, $id, $msisdn, $reference,$disburseamount)
     {
-        $constantAmt = 2000;
-        $amountTocheck = myhelper::AmountAttained();
         $transid = $id;
+        $mpesa = (int) myhelper::getAmountAttained('RASHARASHA');
+        var_dump($mpesa);
+        $disburse = (int) myhelper::getAmountDisbursed('RASHARASHA');
+        $winningAmount = $mpesa - $disburse;
+        var_dump($winningAmount);
         $idsArray = explode('*', $ussdString);
+        $phone_number = $msisdn;
+        $game = $reference;
+        $playeramount=myhelper::getRashaRashaAmount($ussdString, 'KES');
+        $doubledisburseamount = (int) (2 * $disburseamount);
+        
         if (count($idsArray) >= 2) {
-            if ($amountTocheck >= $constantAmt) {
-                $amount =  myhelper::getRashaRashaAmount($ussdString, 'WIN');
-                $phone_number = $msisdn;
-                $game = $reference;
-
-                $paymentRecord = MpesaPayments::find()->where(['transid' => $transid])->one();
-                if (!$paymentRecord) {
-                    return "Payment record not found";
-                }
-                $name = $paymentRecord->name;
-
-                $request = [
-                    "transid" => $transid,
-                    "amount" => $amount,
-                    "externalId" => $transid,
-                    "phone_number" => $phone_number,
-                    "game" => $game,
-                    "name" => $name
-                ];
-
-                $url = SAVE_WINNER;
-                $headers = ['Content-Type: application/json'];
-                $response = myhelper::curlPost($request, $headers, $url);
-                myhelper::saveOutbox($id, $ussdString, 'WIN');
-
-                return $response; // Return response in winning case
+            if ($winningAmount > $disburseamount && !in_array($playeramount, [20, 50])) {
+                self::getRashaWinnerData($transid, $disburseamount, $msisdn, $reference);
+                myhelper::saveRasharashaOutbox($id, $ussdString, 'WIN');
+            } else if ($winningAmount >= $doubledisburseamount && in_array($playeramount, [20, 50])) {
+                self::getRashaWinnerData($transid, $disburseamount, $msisdn, $reference);
+                myhelper::saveRasharashaOutbox($id, $ussdString, 'WIN');
             } else {
-                myhelper::saveOutbox($id, $ussdString, 'LOSE');
+                myhelper::saveRasharashaOutbox($id, $ussdString, 'LOSE');
             }
         } else {
             return "Invalid input or condition not met";
         }
     }
-    public static function saveOutbox($id, $ussdString, $type = 'WIN')
+    public static function saveRasharashaOutbox($id, $ussdString, $type = 'WIN')
     {
         $transid = $id;
         $ticketId = '#' . substr(bin2hex(random_bytes(3)), 0, 6);
@@ -392,6 +398,35 @@ class myhelper extends Component
 
         // return $response;
     }
+    public static function getRashaWinnerData($transid, $disburseamount, $msisdn, $reference)
+    {
+
+        $phone_number = $msisdn;
+        $game = $reference;
+
+        // Find the payment record
+        $paymentRecord = MpesaPayments::find()->where(['transid' => $transid])->one();
+                if (!$paymentRecord) {
+                    return "Payment record not found";
+                }
+                $name = $paymentRecord->name;
+
+                $request = [
+                    "transid" => $transid,
+                    "amount" => $disburseamount,
+                    "externalId" => $transid,
+                    "phone_number" => $phone_number,
+                    "game" => $game,
+                    "name" => $name
+                ];
+
+                $url = SAVE_WINNER;
+                $headers = ['Content-Type: application/json'];
+                $response = myhelper::curlPost($request, $headers, $url);
+
+        // return $response;
+    }
+
 
 
     public static function saveOutboxPick($transid, $idsArray, $randomNumber, $totalCount, $shuffledMoney, $disburse, $type = 'LOSE')
