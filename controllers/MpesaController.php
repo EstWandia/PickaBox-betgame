@@ -242,7 +242,28 @@ class MpesaController extends Controller
             $disburseamount=myhelper::getRashaRashaAmount($ussdString, 'WIN');
             myhelper::winningPlayerRasharasha($ussdString, $id, $msisdn, $reference, $disburseamount);
           
-        } else {
+        }else if ($ussdString === "3") {
+            // First level response when "1" is selected
+            $response = "CON Cheza Pick-a-Box Shinda KES.1,500,000/- Instant!!\n";
+            $response .= "1.Outo-Pick \n";
+            $response .= "2. Chagua Nambari \n";
+        } else if ($ussdString === "3*1") {
+            // Generate a random number
+            $randomNumber = rand(111, 999);
+            $response = "CON Umechaguliwa nambari: $randomNumber\n";
+            $response = LAST_LEVEL_MESSAGE;
+            $id = Uuid::generate()->string;
+            $amount = 30;            
+        } else if ($ussdString === "3*2") {
+            // Generate a random number
+            $response ="Weka nabari zako tatu za bahati:
+            Example:1,2,3";           
+        }else if(preg_match('/^\d+\*\d+\*\d{3}$/', $ussdString,)){
+            $response = LAST_LEVEL_MESSAGE;
+            $id = Uuid::generate()->string;
+            $amount = 30; 
+        }
+        else {
             // Invalid request
             $response = INVALID_REQUEST;
         }
