@@ -1,24 +1,24 @@
 <?php
 
-use app\models\Outbox;
+use app\models\Band;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /** @var yii\web\View $this */
-/** @var app\models\OutboxSearch $searchModel */
+/** @var app\models\BandSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Outboxes';
+$this->title = 'Bands';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="outbox-index">
+<div class="band-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?php #Html::a('Create Outbox', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Band', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -31,12 +31,20 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'status',
-            'message:ntext',
-            'created_at',
+            'band_amount',
+            'possible_win',
+            'rtp',
+            'retainer',
+            'position',
+            'correct_position',
+            //'retainer_percentage',
+            //'rtp_percentage',
+            //'stake_tax',
+            //'win_tax',
+            'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Outbox $model, $key, $index, $column) {
+                'urlCreator' => function ($action, Band $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

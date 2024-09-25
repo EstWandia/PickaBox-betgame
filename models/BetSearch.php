@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Outbox;
+use app\models\Bet;
 
 /**
- * OutboxSearch represents the model behind the search form of `app\models\Outbox`.
+ * BetSearch represents the model behind the search form of `app\models\Bet`.
  */
-class OutboxSearch extends Outbox
+class BetSearch extends Bet
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class OutboxSearch extends Outbox
     public function rules()
     {
         return [
-            [['id', 'message','created_at','type'], 'safe'],
-            [['status'], 'integer'],
+            [['id', 'choice', 'band_id', 'msisdn', 'created_at'], 'safe'],
+            [['stake', 'net_stake', 'net_win', 'win_tax', 'stake_tax', 'rtp'], 'number'],
         ];
     }
 
@@ -40,17 +40,12 @@ class OutboxSearch extends Outbox
      */
     public function search($params)
     {
-        $query = Outbox::find();
+        $query = Bet::find()->orderBy(['created_at' => SORT_DESC]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC, // Sort by created_at in descending order
-                ],
-            ],
         ]);
 
         $this->load($params);
@@ -63,14 +58,19 @@ class OutboxSearch extends Outbox
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'state' => $this->status,
-            'Category' => $this->category,
+            'stake' => $this->stake,
+            'net_stake' => $this->net_stake,
+            'net_win' => $this->net_win,
+            'win_tax' => $this->win_tax,
+            'stake_tax' => $this->stake_tax,
+            'rtp' => $this->rtp,
             'created_at' => $this->created_at,
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])
-            ->andFilterWhere(['like', 'message', $this->message]);
-            
+            ->andFilterWhere(['like', 'choice', $this->choice])
+            ->andFilterWhere(['like', 'band_id', $this->band_id])
+            ->andFilterWhere(['like', 'msisdn', $this->msisdn]);
 
         return $dataProvider;
     }

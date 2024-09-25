@@ -4,19 +4,19 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\models\Outbox $model */
+/** @var app\models\Bet $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Outboxes', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Bets', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="outbox-view">
+<div class="bet-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <? Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -30,8 +30,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'state',
-            'message:ntext',
+            'choice',
+            'band_id',
+            'msisdn',
+            'stake',
+            'net_stake',
+            'net_win',
+            'win_tax',
+            'stake_tax',
+            'rtp',
+            'created_at',
         ],
     ]) ?>
 

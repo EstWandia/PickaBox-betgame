@@ -39,9 +39,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            ['label' => 'Deposits', 'url' => ['/gamedeposit/index']],
+            ['label' => 'Outbox', 'url' => ['/outbox/index']],
+            ['label' => 'Band', 'url' => ['/band/index']],
+            ['label' => 'Bets', 'url' => ['/bet/index']],
+            ['label' => 'Disbursements', 'url' => ['/gamedisbursement/index']],
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
                 : '<li class="nav-item">'

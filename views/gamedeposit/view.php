@@ -4,19 +4,19 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\models\Outbox $model */
+/** @var app\models\GameDeposit $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Outboxes', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Game Deposits', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="outbox-view">
+<div class="game-deposit-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <? Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -30,8 +30,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
+            'TransID',
+            'FirstName',
+            'MiddleName',
+            'LastName',
+            'MSISDN',
+            'BusinessShortCode',
+            'ThirdPartyTransID',
+            'OrgAccountBalance',
+            'TransAmount',
+            'is_archived',
+            'created_at',
+            'updated_at',
+            'deleted_at',
             'state',
-            'message:ntext',
         ],
     ]) ?>
 

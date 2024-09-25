@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Outbox;
+use app\models\GameDisbursement;
 
 /**
- * OutboxSearch represents the model behind the search form of `app\models\Outbox`.
+ * GameDisbursementSearch represents the model behind the search form of `app\models\GameDisbursement`.
  */
-class OutboxSearch extends Outbox
+class GameDisbursementSearch extends GameDisbursement
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,9 @@ class OutboxSearch extends Outbox
     public function rules()
     {
         return [
-            [['id', 'message','created_at','type'], 'safe'],
-            [['status'], 'integer'],
+            [['id', 'bet_id', 'msisdn', 'transaction_id', 'created_at'], 'safe'],
+            [['amount'], 'number'],
+            [['state'], 'integer'],
         ];
     }
 
@@ -40,17 +41,12 @@ class OutboxSearch extends Outbox
      */
     public function search($params)
     {
-        $query = Outbox::find();
+        $query = GameDisbursement::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC, // Sort by created_at in descending order
-                ],
-            ],
         ]);
 
         $this->load($params);
@@ -63,14 +59,15 @@ class OutboxSearch extends Outbox
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'state' => $this->status,
-            'Category' => $this->category,
+            'amount' => $this->amount,
+            'state' => $this->state,
             'created_at' => $this->created_at,
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])
-            ->andFilterWhere(['like', 'message', $this->message]);
-            
+            ->andFilterWhere(['like', 'bet_id', $this->bet_id])
+            ->andFilterWhere(['like', 'msisdn', $this->msisdn])
+            ->andFilterWhere(['like', 'transaction_id', $this->transaction_id]);
 
         return $dataProvider;
     }

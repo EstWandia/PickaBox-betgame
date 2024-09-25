@@ -8,9 +8,9 @@ use Yii;
  * This is the model class for table "outbox".
  *
  * @property string $id
- * @property int|null $state
+ * @property int|null $status
  * @property string|null $message
- * @property string|null $type
+ * @property string|null $category
  * @property string|null $created_at
  */
 class Outbox extends \yii\db\ActiveRecord
@@ -21,6 +21,11 @@ class Outbox extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'outbox';
+    }
+
+    public static function getDb()
+    {
+        return Yii::$app->sms_db;
     }
 
     /**
@@ -47,7 +52,7 @@ class Outbox extends \yii\db\ActiveRecord
             'id' => 'ID',
             'state' => 'State',
             'message' => 'Message',
-            'type' => 'Type',
+            'category' => 'Category',
             'created_at' =>'Created At'
         ];
     }

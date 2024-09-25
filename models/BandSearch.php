@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Outbox;
+use app\models\Band;
 
 /**
- * OutboxSearch represents the model behind the search form of `app\models\Outbox`.
+ * BandSearch represents the model behind the search form of `app\models\Band`.
  */
-class OutboxSearch extends Outbox
+class BandSearch extends Band
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,9 @@ class OutboxSearch extends Outbox
     public function rules()
     {
         return [
-            [['id', 'message','created_at','type'], 'safe'],
-            [['status'], 'integer'],
+            [['id', 'updated_at'], 'safe'],
+            [['band_amount', 'possible_win', 'rtp', 'retainer', 'retainer_percentage', 'rtp_percentage', 'stake_tax', 'win_tax'], 'number'],
+            [['position', 'correct_position'], 'integer'],
         ];
     }
 
@@ -40,17 +41,12 @@ class OutboxSearch extends Outbox
      */
     public function search($params)
     {
-        $query = Outbox::find();
+        $query = Band::find()->orderBy(['band_amount' => SORT_ASC]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC, // Sort by created_at in descending order
-                ],
-            ],
         ]);
 
         $this->load($params);
@@ -63,14 +59,20 @@ class OutboxSearch extends Outbox
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'state' => $this->status,
-            'Category' => $this->category,
-            'created_at' => $this->created_at,
+            'band_amount' => $this->band_amount,
+            'possible_win' => $this->possible_win,
+            'rtp' => $this->rtp,
+            'retainer' => $this->retainer,
+            'position' => $this->position,
+            'correct_position' => $this->correct_position,
+            'retainer_percentage' => $this->retainer_percentage,
+            'rtp_percentage' => $this->rtp_percentage,
+            'stake_tax' => $this->stake_tax,
+            'win_tax' => $this->win_tax,
+            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'id', $this->id])
-            ->andFilterWhere(['like', 'message', $this->message]);
-            
+        $query->andFilterWhere(['like', 'id', $this->id]);
 
         return $dataProvider;
     }

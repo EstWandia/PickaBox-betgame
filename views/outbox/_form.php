@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'state')->textInput() ?>
+    <?= $form->field($model, 'status')->textInput() ?>
 
     <?= $form->field($model, 'message')->textarea(['rows' => 6]) ?>
 
