@@ -43,6 +43,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             ['label' => 'Outbox', 'url' => ['/outbox/index']],
             ['label' => 'Band', 'url' => ['/band/index']],
             ['label' => 'Bets', 'url' => ['/bet/index']],
+            ['label' => 'TransactionLog', 'url' => ['/gametransactionlog/index']],
             ['label' => 'Disbursements', 'url' => ['/gamedisbursement/index']],
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
