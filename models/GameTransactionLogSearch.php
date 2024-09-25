@@ -65,7 +65,6 @@ class GameTransactionLogSearch extends GameTransactionLog
         $query->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'json_data', $this->json_data])
             ->andFilterWhere(['like', 'api_type', $this->api_type])
-            ->andFilterWhere(['like', 'transID', $this->transID])
             ->andFilterWhere(['like', 'CheckoutRequestID', $this->CheckoutRequestID]);
 
         return $dataProvider;
