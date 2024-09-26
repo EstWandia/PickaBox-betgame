@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link https://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license https://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace app\assets;
@@ -20,12 +21,17 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css',
+        //'css/site.css',
+        'css/sbadmin/all.css',
+        'css/sbadmin/custom.css',
+        'css/sbadmin/sb-admin-2.css',
     ];
     public $js = [
+        'js/sbadmin/jquery.easing.min.js',
+        'js/sbadmin/sb-admin-2.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap5\BootstrapAsset'
+        'yii\bootstrap4\BootstrapPluginAsset',
     ];
 }

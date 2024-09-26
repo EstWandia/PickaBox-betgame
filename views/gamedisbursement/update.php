@@ -2,8 +2,8 @@
 
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var app\models\GameDisbursement $model */
+/* @var $this yii\web\View */
+/* @var $model app\models\GameDisbursement */
 
 $this->title = 'Update Game Disbursement: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Game Disbursements', 'url' => ['index']];

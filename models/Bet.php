@@ -65,7 +65,5 @@ class Bet extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function getDb() {
-        return Yii::$app->sms_db;
-    }
+
 }

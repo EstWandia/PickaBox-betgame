@@ -2,8 +2,8 @@
 
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var app\models\Bet $model */
+/* @var $this yii\web\View */
+/* @var $model app\models\Bet */
 
 $this->title = 'Create Bet';
 $this->params['breadcrumbs'][] = ['label' => 'Bets', 'url' => ['index']];

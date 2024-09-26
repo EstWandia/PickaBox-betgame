@@ -1,14 +1,13 @@
 <?php
-
-require_once __DIR__ . '/credentials.php'; 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
-$sms_db = require __DIR__ . '/sms_db.php';
 
 $config = [
     'id' => 'basic',
+    'layout' => 'main',
+    'name' => 'USSD GAMES',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log','queue'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -16,7 +15,7 @@ $config = [
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '8cc33963a46e9c76fcbf42af4b7e2337903dec33ebe4fda9425c3160abc84e07',
+            'cookieValidationKey' => "Cw5)Z5/Ue+e&<W'Y",
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -29,9 +28,10 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@app/mail',
-            // send all mails to a file by default.
+            'class' => 'yii\swiftmailer\Mailer',
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
             'useFileTransport' => true,
         ],
         'log' => [
@@ -44,17 +44,43 @@ $config = [
             ],
         ],
         'db' => $db,
-        'sms_db' => $sms_db,
-        
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-    
+        'queue' =>  [
+            'class' => \yii\queue\db\Queue::class,
+            //'strictJobType' => false,
+            //'serializer' => \yii\queue\serializers\JsonSerializer::class,
+            'db' => $db, // DB connection component or its config 
+            'tableName' => '{{%queue}}', // Table name
+            'channel' => 'default', // Queue channel key
+            'mutex' => \yii\mutex\MysqlMutex::class, // Mutex used to sync queries
+            'ttr' => 43200,
+        ],
+         'assetManager' => [
+        'bundles' => [
+            'yii\bootstrap\BootstrapAsset' => [
+                'sourcePath' => '@vendor/kartik-v/yii2-bootstrap4/assets/',
+                'css' => ['css/bootstrap.css'],
+            ],
+            'yii\bootstrap\BootstrapPluginAsset' => [
+                'sourcePath' => '@vendor/kartik-v/yii2-bootstrap4/assets/',
+                'js' => ['js/bootstrap.bundle.js'],
+            ],
+        ],
     ],
-    'params' => $params,
+    'myhelper' => [
+        'class' => 'app\components\Myhelper', // Adjust the path if necessary
+    ],
+    ],
+    'modules' => [
+     'gridview' => ['class' => 'kartik\grid\Module']] ,
+    'params' => array_merge($params, [
+        'bsVersion' => '4.x',
+    ]),
 ];
 
 if (YII_ENV_DEV) {
@@ -70,7 +96,7 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        // 'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 }
 

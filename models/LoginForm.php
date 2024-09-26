@@ -8,7 +8,7 @@ use yii\base\Model;
 /**
  * LoginForm is the model behind the login form.
  *
- * @property-read User|null $user
+ * @property-read User|null $user This property is read-only.
  *
  */
 class LoginForm extends Model
@@ -59,10 +59,20 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+        $user = User::findOne(['email' => $this->username]);
+        if($user){
+            if (password_verify($this->password, $user->password)) {
+                return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+            } else {
+                //Yii::$app->session->setFlash('authorizationerror');
+                Yii::$app->session->setFlash('error', 'Error: You dont have permission to access this app');
+                return false;
+            }
+        }else{
+            //Yii::$app->session->setFlash('accesserror');
+            Yii::$app->session->setFlash('error', 'Error:  Incorrect username or password');
+            return false;
         }
-        return false;
     }
 
     /**

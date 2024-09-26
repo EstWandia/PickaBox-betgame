@@ -2,8 +2,8 @@
 
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var app\models\GameTransactionLog $model */
+/* @var $this yii\web\View */
+/* @var $model app\models\GameTransactionLog */
 
 $this->title = 'Update Game Transaction Log: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Game Transaction Logs', 'url' => ['index']];

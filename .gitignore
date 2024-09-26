@@ -31,3 +31,8 @@ tests/_support/_generated
 
 #vagrant folder
 /.vagrant
+#uploads folder
+web/uploads
+config/safaricom_sms.php
+config/credentials.php
+/logs

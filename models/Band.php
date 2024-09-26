@@ -30,10 +30,6 @@ class Band extends \yii\db\ActiveRecord
         return 'band';
     }
 
-    public static function getDb() {
-        return Yii::$app->sms_db;
-    }
-
     /**
      * {@inheritdoc}
      */

@@ -3,8 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/** @var yii\web\View $this */
-/** @var app\models\Outbox $model */
+/* @var $this yii\web\View */
+/* @var $model app\models\Outbox */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Outboxes', 'url' => ['index']];
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <? Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -30,8 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'state',
+            'receiver',
             'message:ntext',
+            'created_at',
+            'status',
+            'category',
+            'sender',
         ],
     ]) ?>
 

@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $this */
-/** @var app\models\Bet $model */
-/** @var yii\widgets\ActiveForm $form */
+/* @var $this yii\web\View */
+/* @var $model app\models\Bet */
+/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="bet-form">

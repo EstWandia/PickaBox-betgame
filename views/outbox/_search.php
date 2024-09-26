@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $this */
-/** @var app\models\OutboxSearch $model */
-/** @var yii\widgets\ActiveForm $form */
+/* @var $this yii\web\View */
+/* @var $model app\models\OutboxSearch */
+/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="outbox-search">
@@ -13,16 +13,21 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
-        'options' => [
-            'data-pjax' => 1
-        ],
     ]); ?>
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'state') ?>
+    <?= $form->field($model, 'receiver') ?>
 
     <?= $form->field($model, 'message') ?>
+
+    <?= $form->field($model, 'created_at') ?>
+
+    <?= $form->field($model, 'status') ?>
+
+    <?php // echo $form->field($model, 'category') ?>
+
+    <?php // echo $form->field($model, 'sender') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

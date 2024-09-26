@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $this */
-/** @var app\models\GameTransactionLog $model */
-/** @var yii\widgets\ActiveForm $form */
+/* @var $this yii\web\View */
+/* @var $model app\models\GameTransactionLog */
+/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="game-transaction-log-form">

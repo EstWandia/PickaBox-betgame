@@ -1,51 +1,107 @@
 <?php
 
-/** @var yii\web\View $this */
+/* @var $this yii\web\View */
 
-$this->title = 'Games';
+$this->title = 'Jambobet Sms';
 ?>
 <div class="site-index">
-
-    <div class="jumbotron text-center bg-transparent mt-5 mb-5">
-        <h1 class="display-4">Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
     <div class="body-content">
+                            <!-- start of Row -->
+                            <div class="row">
+
+<!-- Earnings (Monthly) Card Example -->
+<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        TOTAL INBOX</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$inbox_count; ?></div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-comment-alt fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Earnings (Monthly) Card Example -->
+<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        TOTAL SENT SMS</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$sent_sms_count;?></div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-comment-alt fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Earnings (Monthly) Card Example 
+<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                        </div>
+                        <div class="col">
+                            <div class="progress progress-sm mr-2">
+                                <div class="progress-bar bg-info" role="progressbar"
+                                    style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+<!-- Pending Requests Card Example -->
+<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        TOTAL OUTBOX </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$outbox_count; ?></div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-comment-alt fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- end of the row-->
+
 
         <div class="row">
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
             <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+                           </div>
+            <div class="col-lg-4">
+                           </div>
+            <div class="col-lg-4">
             </div>
         </div>
 

@@ -1,14 +1,11 @@
 <?php
 
-use app\models\Band;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
-/** @var yii\web\View $this */
-/** @var app\models\BandSearch $searchModel */
-/** @var yii\data\ActiveDataProvider $dataProvider */
+
+/* @var $this yii\web\View */
+/* @var $searchModel app\models\BandSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Bands';
 $this->params['breadcrumbs'][] = $this->title;
@@ -21,7 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Band', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -35,22 +31,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'possible_win',
             'rtp',
             'retainer',
-            'position',
-            'correct_position',
+            //'position',
+            //'correct_position',
             //'retainer_percentage',
             //'rtp_percentage',
             //'stake_tax',
             //'win_tax',
-            'updated_at',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Band $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
+            //'updated_at',
+
+            ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 
-    <?php Pjax::end(); ?>
 
 </div>

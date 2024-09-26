@@ -2,8 +2,8 @@
 
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var app\models\Outbox $model */
+/* @var $this yii\web\View */
+/* @var $model app\models\Outbox */
 
 $this->title = 'Create Outbox';
 $this->params['breadcrumbs'][] = ['label' => 'Outboxes', 'url' => ['index']];

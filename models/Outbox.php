@@ -8,10 +8,12 @@ use Yii;
  * This is the model class for table "outbox".
  *
  * @property string $id
- * @property int|null $status
+ * @property string|null $receiver
  * @property string|null $message
+ * @property string $created_at
+ * @property int|null $status
  * @property string|null $category
- * @property string|null $created_at
+ * @property string|null $sender
  */
 class Outbox extends \yii\db\ActiveRecord
 {
@@ -23,11 +25,6 @@ class Outbox extends \yii\db\ActiveRecord
         return 'outbox';
     }
 
-    public static function getDb()
-    {
-        return Yii::$app->sms_db;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -35,10 +32,12 @@ class Outbox extends \yii\db\ActiveRecord
     {
         return [
             [['id'], 'required'],
-            [['created_at'], 'integer'],
-            [['id','type'], 'safe'],
-            [['message','type'], 'string'],
+            [['message'], 'string'],
+            [['created_at'], 'safe'],
+            [['status'], 'integer'],
             [['id'], 'string', 'max' => 36],
+            [['receiver', 'sender'], 'string', 'max' => 20],
+            [['category'], 'string', 'max' => 50],
             [['id'], 'unique'],
         ];
     }
@@ -50,10 +49,12 @@ class Outbox extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'state' => 'State',
+            'receiver' => 'Receiver',
             'message' => 'Message',
+            'created_at' => 'Created At',
+            'status' => 'Status',
             'category' => 'Category',
-            'created_at' =>'Created At'
+            'sender' => 'Sender',
         ];
     }
 }

@@ -2,8 +2,8 @@
 
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var app\models\Band $model */
+/* @var $this yii\web\View */
+/* @var $model app\models\Band */
 
 $this->title = 'Update Band: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Bands', 'url' => ['index']];

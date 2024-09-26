@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $this */
-/** @var app\models\GameDepositSearch $model */
-/** @var yii\widgets\ActiveForm $form */
+/* @var $this yii\web\View */
+/* @var $model app\models\GameDepositSearch */
+/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="game-deposit-search">
@@ -13,9 +13,6 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
-        'options' => [
-            'data-pjax' => 1
-        ],
     ]); ?>
 
     <?= $form->field($model, 'id') ?>

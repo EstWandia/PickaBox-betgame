@@ -54,10 +54,6 @@ class GameDeposit extends ActiveRecord
         ];
     }
 
-    public static function getDb() {
-        return Yii::$app->sms_db;
-    }
-
     public static function logDeposit($TransId, $msisdn, $amount,$state,$ThirdPartyTransID)
     {
         $model = new GameDeposit();

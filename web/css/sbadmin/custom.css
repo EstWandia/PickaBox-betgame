@@ -1,0 +1,19 @@
+/* Custom styles for the loading modal */
+#loadingModal .modal-content {
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+}
+
+#loadingModal .modal-body {
+  background-color: #343a40; /* Dark background for contrast */
+  color: #ffffff; /* White text color */
+}
+
+#loadingModal .spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+#loadingModal .modal-body p {
+  font-size: 1.25rem;
+}

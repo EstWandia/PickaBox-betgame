@@ -1,27 +1,23 @@
 <?php
 
-use app\models\GameDeposit;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
-/** @var yii\web\View $this */
-/** @var app\models\GameDepositSearch $searchModel */
-/** @var yii\data\ActiveDataProvider $dataProvider */
+
+/* @var $this yii\web\View */
+/* @var $searchModel app\models\GameDepositSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Game Deposits';
-// $this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="game-deposit-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?php # Html::a('Create Game Deposit', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php #Html::a('Create Game Deposit', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -30,7 +26,7 @@ $this->title = 'Game Deposits';
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            // 'id',
             'TransID',
             // 'FirstName',
             // 'MiddleName',
@@ -44,16 +40,11 @@ $this->title = 'Game Deposits';
             'created_at',
             //'updated_at',
             //'deleted_at',
-            'state',
-            // [
-            //     // 'class' => ActionColumn::className(),
-            //     // 'urlCreator' => function ($action, GameDeposit $model, $key, $index, $column) {
-            //     //     return Url::toRoute([$action, 'id' => $model->id]);
-            //     //  }
-            // ],
+            //'state',
+
+            // ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 
-    <?php Pjax::end(); ?>
 
 </div>

@@ -2,30 +2,23 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
+    public static function tableName()
+    {
+        return 'user';
+    }
+    public function rules()
+    {
+      
+        return [
+            [['sender_name','password','temp_password'], 'string'],
+            [['created_date', 'modified_date'], 'safe'],
+            [['is_deleted','perm_group','defaultpermissiondenied','extpermission','created_by'], 'integer'],
+            [['email'], 'string', 'max' => 255],
+            [['api_token'], 'text'],
+        ];
+    }
 
 
     /**
@@ -33,7 +26,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne($id);
     }
 
     /**
@@ -41,13 +34,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['access_token' => $token]);
     }
 
     /**
@@ -58,13 +45,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findByUsername($username)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['email' => $username]);
     }
 
     /**
@@ -80,7 +61,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        //return $this->auth_key;
     }
 
     /**
@@ -88,7 +69,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return $this->getAuthKey() === $authKey;
     }
 
     /**
@@ -99,6 +80,35 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return $this->password ===password_hash($password, PASSWORD_DEFAULT);
+    }
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->auth_key = \Yii::$app->security->generateRandomString();
+            }
+            return true;
+        }
+        return false;
+    }
+        /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'email' => 'Email',
+            'password' => 'Password',
+            'created_date' => 'Created Date',
+            'modified_date' => 'Modified Date',
+            'is_deleted' => 'Is Deleted',
+            'perm_group' => 'perm_group',
+            'defaultpermissiondenied' => 'defaultpermissiondenied',
+            'extpermission' => 'extpermission',
+            'temp_password' => 'temp_password',
+            'api_token' => 'api_token',
+        ];
     }
 }

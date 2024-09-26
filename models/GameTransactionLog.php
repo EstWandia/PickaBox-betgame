@@ -24,10 +24,6 @@ class GameTransactionLog extends ActiveRecord
         return 'transaction_log';
     }
 
-    public static function getDb() {
-        return Yii::$app->sms_db;
-    }
-
     public static function log($id, $data,$api_type,$state)
     {
             $model=new GameTransactionLog();

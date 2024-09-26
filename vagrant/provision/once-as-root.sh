@@ -70,7 +70,7 @@ info "Removing default site configuration"
 rm /etc/nginx/sites-enabled/default
 echo "Done!"
 
-info "Initialize databases for MySQL"
+info "Initailize databases for MySQL"
 mysql <<< 'CREATE DATABASE yii2basic'
 mysql <<< 'CREATE DATABASE yii2basic_test'
 echo "Done!"

@@ -3,8 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/** @var yii\web\View $this */
-/** @var app\models\Bet $model */
+/* @var $this yii\web\View */
+/* @var $model app\models\Bet */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Bets', 'url' => ['index']];

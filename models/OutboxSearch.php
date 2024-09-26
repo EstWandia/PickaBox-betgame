@@ -17,7 +17,7 @@ class OutboxSearch extends Outbox
     public function rules()
     {
         return [
-            [['id', 'message','created_at','type'], 'safe'],
+            [['id', 'receiver', 'message', 'created_at', 'category', 'sender'], 'safe'],
             [['status'], 'integer'],
         ];
     }
@@ -46,11 +46,6 @@ class OutboxSearch extends Outbox
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC, // Sort by created_at in descending order
-                ],
-            ],
         ]);
 
         $this->load($params);
@@ -63,14 +58,15 @@ class OutboxSearch extends Outbox
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'state' => $this->status,
-            'Category' => $this->category,
             'created_at' => $this->created_at,
+            'status' => $this->status,
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])
-            ->andFilterWhere(['like', 'message', $this->message]);
-            
+            ->andFilterWhere(['like', 'receiver', $this->receiver])
+            ->andFilterWhere(['like', 'message', $this->message])
+            ->andFilterWhere(['like', 'category', $this->category])
+            ->andFilterWhere(['like', 'sender', $this->sender]);
 
         return $dataProvider;
     }

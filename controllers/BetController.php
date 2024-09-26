@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Bet;
 use app\models\BetSearch;
 use yii\web\Controller;
@@ -14,32 +15,28 @@ use yii\filters\VerbFilter;
 class BetController extends Controller
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
                 ],
-            ]
-        );
+            ],
+        ];
     }
 
     /**
      * Lists all Bet models.
-     *
-     * @return string
+     * @return mixed
      */
     public function actionIndex()
     {
         $searchModel = new BetSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -49,8 +46,8 @@ class BetController extends Controller
 
     /**
      * Displays a single Bet model.
-     * @param string $id ID
-     * @return string
+     * @param string $id
+     * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
@@ -63,18 +60,14 @@ class BetController extends Controller
     /**
      * Creates a new Bet model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
+     * @return mixed
      */
     public function actionCreate()
     {
         $model = new Bet();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -85,15 +78,15 @@ class BetController extends Controller
     /**
      * Updates an existing Bet model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $id ID
-     * @return string|\yii\web\Response
+     * @param string $id
+     * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -105,8 +98,8 @@ class BetController extends Controller
     /**
      * Deletes an existing Bet model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $id ID
-     * @return \yii\web\Response
+     * @param string $id
+     * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
@@ -119,13 +112,13 @@ class BetController extends Controller
     /**
      * Finds the Bet model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id ID
+     * @param string $id
      * @return Bet the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Bet::findOne(['id' => $id])) !== null) {
+        if (($model = Bet::findOne($id)) !== null) {
             return $model;
         }
 

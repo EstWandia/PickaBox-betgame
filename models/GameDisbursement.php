@@ -25,11 +25,6 @@ class GameDisbursement extends ActiveRecord
         return 'game_disbursement';
     }
 
-    public static function getDb()
-    {
-        return Yii::$app->sms_db;
-    }
-
     public static function logDisbursement($bet_id,$amount, $msisdn)
     {
         $model = new GameDisbursement();
