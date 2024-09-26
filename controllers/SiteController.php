@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Bet;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -70,15 +71,14 @@ class SiteController extends Controller
     {
         if(!Yii::$app->user->isGuest)
         {
-            $outbox_count=0;
-            // $sent_sms_count=SentSms::getSentsmsCount();
+            $outbox_count=Outbox::getOutboxCount();
             $sent_sms_count = 0;
-            $inbox_count=0;
+            $bet_count = Bet::getBetCount();
             // $inbox_count=Inbox::getInboxCount();
             return $this->render('index',[
                 "outbox_count"=>$outbox_count,
                 "sent_sms_count"=>$sent_sms_count,
-                "inbox_count"=>$inbox_count
+                "inbox_count"=>$bet_count
             ]);
         }
         else{

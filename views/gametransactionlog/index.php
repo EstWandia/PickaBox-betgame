@@ -26,13 +26,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            // 'id',
+            'CheckoutRequestID',
+            'api_type',
             'json_data:ntext',
             'date',
-            'api_type',
             'state',
             //'transID',
-            'CheckoutRequestID',
+            
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

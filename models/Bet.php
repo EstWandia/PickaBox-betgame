@@ -65,5 +65,10 @@ class Bet extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function getBetCount()
+    {
+        return Bet::find()->count();
+    }
+
 
 }

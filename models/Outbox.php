@@ -57,4 +57,8 @@ class Outbox extends \yii\db\ActiveRecord
             'sender' => 'Sender',
         ];
     }
+    public static function getOutboxCount()
+    {
+        return Outbox::find()->count();
+    }
 }
