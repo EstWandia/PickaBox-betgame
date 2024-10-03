@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\myhelper;
 use Yii;
 
 /**
@@ -84,5 +85,48 @@ class MpesaPayments extends \yii\db\ActiveRecord
                 $model->save(false);
             }
          }
+        }
+        public  static function getStkPush(){
+            $accessToken = trim(myhelper::getToken());
+            
+            $businessShortCode ='174379';
+            $passkey= 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
+            $timestamp =date('YmdHis');
+            var_dump($timestamp);
+            $stkPushUrl = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+            $password=base64_encode($businessShortCode . $passkey . $timestamp);
+    
+            $headers = [
+                'Authorization: Bearer ' . $accessToken,
+                'Content-Type: application/json'
+            ];
+            $payload = [
+                'BusinessShortCode' => '174379',
+                'Password' =>$password,
+                'Timestamp' => date('YmdHis'),
+                'TransactionType' => 'CustomerPayBillOnline',
+                'Amount' => 1,
+                'PartyA' => '254759273807',
+                'PartyB' => '174379',
+                'PhoneNumber' => '254759273807',
+                'CallBackURL' => 'https://58a3-41-209-57-169.ngrok-free.app/mpesa/paymentcallback',
+                'AccountReference' => 'Test123',
+                'TransactionDesc' => 'Payment for services'
+            ];
+            $response= myhelper::curlPost($payload,$headers,$stkPushUrl);
+            var_dump($response);exit;
+    
+            $result = json_decode($response, true);
+    
+            if (isset($result['ResponseCode']) && isset($result['ResponseCode'])) {
+                if (isset($data['Body']['stkCallback']['CallbackMetadata']['Item'])) {
+                    $item = $data['Body']['stkCallback']['CallbackMetadata']['Item'];
+                    $mpesaData = array_column($item, 'value', 'Name');
+                    return $mpesaData;
+                }
+            } else {
+                
+                throw new \Exception('Error initiating payment: ' . $response);
+            }
         }
     }
